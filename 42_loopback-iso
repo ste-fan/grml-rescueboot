@@ -99,7 +99,7 @@ for dir in $ISO_LOCATION; do
 done
 
 for iso in $iso_list ; do
-  rel_dirname="$(make_system_path_relative_to_its_root $(dirname $iso))"
+  rel_dirname="$(dirname $(make_system_path_relative_to_its_root $iso))"
   isofn="$(basename $iso)"
   device="$(${grub_probe} -t device ${iso})"
 
@@ -124,11 +124,11 @@ for iso in $iso_list ; do
   cat << EOF
 menuentry "${title}" {
 ${grub_prep}
-        iso_path="${rel_dirname}/${isofn}"
+        iso_path="${rel_dirname%/}/${isofn}"
         export iso_path
         kernelopts=" $CUSTOM_BOOTOPTIONS $additional_param "
         export kernelopts
-        loopback loop "${rel_dirname}/$isofn"
+        loopback loop "${rel_dirname%/}/$isofn"
         set root=(loop)
         configfile /boot/grub/loopback.cfg
 }
